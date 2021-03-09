@@ -49,6 +49,33 @@ router.post("/", (req, res) => {
         });
 });
 
+// LOGIN
+router.post("/login", (req, res) => {
+    // expects {email: "dustybunsen@email.com", password: "eatmydust12345"}
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+        .then(dbUserData => {
+            if (!dbUserData) {
+                res.status(400).json({ message: "No user with that email address!" });
+                return;
+            }
+
+            // res.json({ user: dbUserData });
+
+            // Verify user
+            const validPassword = dbUserData.checkPassword(req.body.password);
+            if (!validPassword) {
+                res.status(400).json({ message: "incorrect password!" });
+                return;
+            }
+
+            res.json({ user: dbUserData, message: "You are now logged in!" });
+        });
+});
+
 // PUT /api/users/1
 router.put("/:id", (req, res) => {
     // expects {username: "DustyBunsen", email: "dustybunsen@email.com", password: "eatmydust12345"}
