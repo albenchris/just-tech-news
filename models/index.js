@@ -4,24 +4,37 @@ const Vote = require("./Vote");
 const Comment = require("./Comment");
 
 // create associations
-
-// ====== Users ==========
 User.hasMany(Post, {
     foreignKey: "user_id"
 });
 
-// ====== Posts ==========
 Post.belongsTo(User, {
     foreignKey: "user_id",
+    onDelete: "SET NULL"
 });
 
-// ====== Votes ==========
+User.belongsToMany(Post, {
+    through: Vote,
+    as: "voted_posts",
+    foreignKey: "user_id",
+    onDelete: "SET NULL"
+});
+
+Post.belongsToMany(User, {
+    through: Vote,
+    as: "voted_posts",
+    foreignKey: "post_id",
+    onDelete: "SET NULL"
+});
+
 Vote.belongsTo(User, {
-    foreignKey: "user_id"
+    foreignKey: "user_id",
+    onDelete: "SET NULL"
 });
 
 Vote.belongsTo(Post, {
-    foreignKey: "post_id"
+    foreignKey: "post_id",
+    onDelete: "SET NULL"
 });
 
 User.hasMany(Vote, {
@@ -32,30 +45,19 @@ Post.hasMany(Vote, {
     foreignKey: "post_id"
 });
 
-// many-to-many relationship
-User.belongsToMany(Post, {
-    through: Vote,
-    as: "voted_posts",
-    foreignKey: "user_id"
-});
-
-Post.belongsToMany(User, {
-    through: Vote,
-    as: "voted_posts",
-    foreignKey: "post_id"
-});
-
-// ====== Comments =======
 Comment.belongsTo(User, {
-    foreignKey: "user_id"
+    foreignKey: "user_id",
+    onDelete: "SET NULL"
 });
 
 Comment.belongsTo(Post, {
-    foreignKey: "post_id"
+    foreignKey: "post_id",
+    onDelete: "SET NULL"
 });
 
 User.hasMany(Comment, {
-    foreignKey: "user_id"
+    foreignKey: "user_id",
+    onDelete: "SET NULL"
 });
 
 Post.hasMany(Comment, {
